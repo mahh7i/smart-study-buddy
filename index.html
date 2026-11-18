@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Study Buddy | AI Learning Assistant</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--ink:#172033;--muted:#718096;--primary:#5b6cff;--primary2:#7a5cff;--line:#e7eaf2;--soft:#eef0ff;--green:#22a06b}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+.app{display:flex;min-height:100vh}.sidebar{width:255px;background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;color:white;font-size:20px}
+.new-chat{border:0;background:var(--soft);color:var(--primary);font-weight:700;padding:12px;border-radius:12px;cursor:pointer;text-align:left}
+.nav-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1.2px;margin:0 0 9px 8px}.nav-btn{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;border:0;background:transparent;width:100%;text-align:left;color:#556078;cursor:pointer;font-size:14px;font-weight:600}.nav-btn:hover,.nav-btn.active{background:var(--soft);color:var(--primary)}.nav-btn .ico{width:22px;font-size:17px}
+.sidebar-bottom{margin-top:auto;border:1px solid var(--line);background:#fafbff;padding:14px;border-radius:14px;font-size:12px;color:var(--muted);line-height:1.6}.sidebar-bottom strong{color:var(--ink);display:block;margin-bottom:4px}
+.main{flex:1;min-width:0;padding:28px 34px}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:27px}.eyebrow{color:var(--muted);font-size:13px}.profile{display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px}.avatar{width:34px;height:34px;border-radius:50%;background:#e9eaff;color:var(--primary);display:grid;place-items:center}
+.hero{background:linear-gradient(120deg,#5b6cff,#7959ed);color:white;padding:28px;border-radius:22px;position:relative;overflow:hidden}.hero:after{content:"✦";position:absolute;font-size:140px;right:24px;top:-30px;opacity:.14}.hero h1{font-size:28px;margin:0 0 8px}.hero p{margin:0;color:#e8eaff;max-width:520px;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}.tool-card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:19px;cursor:pointer;transition:.15s}.tool-card:hover{transform:translateY(-2px);border-color:#c9ceff;box-shadow:0 7px 22px #202b5510}.tool-icon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:#eef0ff;margin-bottom:12px}.tool-card h3{margin:0 0 6px;font-size:16px}.tool-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+.workspace{background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden;min-height:390px}.workspace-head{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;border-bottom:1px solid var(--line)}.workspace-head h2{font-size:16px;margin:0}.status{font-size:12px;color:var(--green);background:#e9f8f1;padding:6px 9px;border-radius:20px}.chat-area{padding:20px;min-height:250px;max-height:440px;overflow:auto;display:flex;flex-direction:column;gap:13px}.welcome{margin:auto;text-align:center;color:var(--muted);max-width:420px}.welcome .big{font-size:36px}.welcome h3{color:var(--ink);margin:8px 0}.message{max-width:85%;padding:12px 15px;border-radius:15px;line-height:1.55;font-size:14px;white-space:pre-wrap}.message.bot{background:#f3f5fa;align-self:flex-start;border-bottom-left-radius:5px}.message.user{background:var(--primary);color:white;align-self:flex-end;border-bottom-right-radius:5px}.input-area{border-top:1px solid var(--line);padding:15px;display:flex;gap:10px}.input-area textarea{resize:vertical;min-height:48px;max-height:130px;flex:1;border:1px solid var(--line);border-radius:13px;padding:13px;font:inherit;outline:none}.input-area textarea:focus{border-color:#aeb5ff}.send{background:var(--primary);border:0;border-radius:12px;color:white;padding:0 18px;font-weight:700;cursor:pointer}.send:hover{filter:brightness(.95)}
+.tool-panel{display:none;padding:22px}.tool-panel.show{display:block}.tool-panel textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;resize:vertical}.tool-panel .run{margin-top:12px;background:var(--primary);color:#fff;border:0;padding:11px 16px;border-radius:11px;font-weight:700;cursor:pointer}.result{margin-top:16px;padding:16px;border-radius:12px;background:#f3f5fa;white-space:pre-wrap;line-height:1.6;font-size:14px}.hidden{display:none!important}
+footer{text-align:center;color:#9aa3b4;font-size:12px;margin:22px 0}
+@media(max-width:900px){.sidebar{width:210px}.main{padding:22px}.cards{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.app{display:block}.sidebar{width:100%;padding:13px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}.brand{font-size:17px}.sidebar nav{display:flex;gap:4px;overflow:auto}.nav-title,.sidebar-bottom{display:none}.nav-btn{white-space:nowrap;width:auto;padding:9px}.new-chat{width:100%}.main{padding:16px}.hero{padding:22px}.hero h1{font-size:23px}.cards{grid-template-columns:1fr}.tool-card{padding:15px}.message{max-width:95%}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">✦</div> Smart Study Buddy</div>
+    <button class="new-chat" onclick="showMode('chat')">＋ &nbsp; New conversation</button>
+    <nav>
+      <p class="nav-title">LEARNING TOOLS</p>
+      <button class="nav-btn active" data-mode="chat" onclick="showMode('chat')"><span class="ico">💬</span> AI Chat</button>
+      <button class="nav-btn" data-mode="summary" onclick="showMode('summary')"><span class="ico">📝</span> Notes Summarizer</button>
+      <button class="nav-btn" data-mode="quiz" onclick="showMode('quiz')"><span class="ico">🎯</span> Quiz Generator</button>
+      <button class="nav-btn" data-mode="explain" onclick="showMode('explain')"><span class="ico">💡</span> Explain a Topic</button>
+    </nav>
+    <div class="sidebar-bottom"><strong>📚 Study smarter</strong>Organize your learning, simplify tough topics, and practice with quick quizzes.</div>
+  </aside>
+  <main class="main">
+    <div class="topbar"><div class="eyebrow">Your personal learning workspace</div><div class="profile"><div class="avatar">S</div> Student</div></div>
+    <section class="hero"><h1>Hey there, learner! 👋</h1><p>What would you like to learn today? Choose a tool below or ask your study question.</p></section>
+    <section class="cards">
+      <div class="tool-card" onclick="showMode('summary')"><div class="tool-icon">📝</div><h3>Summarize Notes</h3><p>Turn long notes into clear, quick revision points.</p></div>
+      <div class="tool-card" onclick="showMode('quiz')"><div class="tool-icon">🎯</div><h3>Create a Quiz</h3><p>Practice a topic with quiz questions.</p></div>
+      <div class="tool-card" onclick="showMode('explain')"><div class="tool-icon">💡</div><h3>Explain Anything</h3><p>Make difficult topics easier to understand.</p></div>
+    </section>
+    <section class="workspace">
+      <div class="workspace-head"><h2 id="workspaceTitle">AI Study Chat</h2><span class="status">● Demo mode</span></div>
+      <div id="chatPanel">
+        <div class="chat-area" id="chatArea">
+          <div class="welcome"><div class="big">✦</div><h3>How can I help you study?</h3><p>Ask a question, request an example, or tell me what you're learning.</p></div>
+        </div>
+        <div class="input-area"><textarea id="chatInput" placeholder="Type your study question here..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea><button class="send" onclick="sendMessage()">Send ➤</button></div>
+      </div>
+      <div class="tool-panel" id="summaryPanel">
+        <h3>📝 Notes Summarizer</h3><p style="color:#718096">Paste your notes below. This demo creates a simple short summary from your text.</p>
+        <textarea id="summaryInput" placeholder="Paste notes or textbook content here..."></textarea><button class="run" onclick="summarize()">Summarize Notes</button><div class="result hidden" id="summaryResult"></div>
+      </div>
+      <div class="tool-panel" id="quizPanel">
+        <h3>🎯 Quiz Generator</h3><p style="color:#718096">Enter a subject or topic to create practice questions.</p>
+        <textarea id="quizInput" placeholder="Example: Photosynthesis, C programming loops, World War II..."></textarea><button class="run" onclick="makeQuiz()">Generate Quiz</button><div class="result hidden" id="quizResult"></div>
+      </div>
+      <div class="tool-panel" id="explainPanel">
+        <h3>💡 Explain a Topic</h3><p style="color:#718096">Enter a topic and get a beginner-friendly explanation with an example.</p>
+        <textarea id="explainInput" placeholder="What topic should I explain?"></textarea><button class="run" onclick="explainTopic()">Explain Topic</button><div class="result hidden" id="explainResult"></div>
+      </div>
+    </section>
+    <footer>Smart Study Buddy • Mini Project 1 • AI-Based Application Development</footer>
+  </main>
+</div>
+<script>
+function showMode(mode){
+  document.getElementById('chatPanel').classList.toggle('hidden',mode!=='chat');
+  ['summary','quiz','explain'].forEach(m=>document.getElementById(m+'Panel').classList.toggle('show',mode===m));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+  const titles={chat:'AI Study Chat',summary:'Notes Summarizer',quiz:'Quiz Generator',explain:'Topic Explainer'};
+  document.getElementById('workspaceTitle').textContent=titles[mode];
+}
+function addMessage(text,who){const area=document.getElementById('chatArea');const welcome=area.querySelector('.welcome');if(welcome)welcome.remove();const d=document.createElement('div');d.className='message '+who;d.textContent=text;area.appendChild(d);area.scrollTop=area.scrollHeight}
+function sendMessage(){
+  const input=document.getElementById('chatInput');const q=input.value.trim();if(!q)return;addMessage(q,'user');input.value='';
+  setTimeout(()=>addMessage(demoAnswer(q),'bot'),350);
+}
+function demoAnswer(q){
+  const lower=q.toLowerCase();
+  if(lower.includes('hello')||lower.includes('hi'))return "Hello! 👋 I'm your Study Buddy demo assistant. Ask me about a subject, or try the Notes Summarizer, Quiz Generator, or Topic Explainer.";
+  if(lower.includes('javascript'))return "JavaScript is a programming language used to make websites interactive. For example, it can respond when you click a button, validate a form, or update content without reloading the page.\n\nSimple example:\nlet name = 'Student';\nalert('Hello ' + name);";
+  if(lower.includes('html'))return "HTML is the structure of a webpage. It tells the browser what elements are on the page, such as headings, paragraphs, buttons, and images.\n\nThink of a webpage like a house: HTML is its structure, CSS is its design, and JavaScript adds actions.";
+  if(lower.includes('css'))return "CSS controls how a webpage looks—colors, fonts, spacing, layout, and responsive design. Example: p { color: blue; } makes paragraph text blue.";
+  if(lower.includes('photosynthesis'))return "Photosynthesis is the process by which green plants use sunlight, water, and carbon dioxide to make glucose (food) and release oxygen. Chlorophyll in leaves captures sunlight.\n\nIn short: sunlight + water + carbon dioxide → glucose + oxygen.";
+  if(lower.includes('c programming')||lower.includes('programming'))return "Programming means writing instructions that a computer follows to perform a task. In C, you can use variables to store information, conditions to make decisions, and loops to repeat tasks.\n\nExample: a loop can print numbers from 1 to 5.";
+  return "Thanks for your question! This website is currently running in demo mode, so the chat uses sample responses rather than a live AI model. You can still try the Notes Summarizer, Quiz Generator, and Topic Explainer. In the next version, we'll connect a real AI API for personalized answers.";
+}
+function summarize(){
+  const t=document.getElementById('summaryInput').value.trim();const r=document.getElementById('summaryResult');if(!t){r.textContent='Please paste your notes first.';r.classList.remove('hidden');return}
+  const sentences=t.split(/(?<=[.!?])\s+/).filter(Boolean);let out=sentences.slice(0,Math.max(2,Math.ceil(sentences.length/3))).join(' ');
+  if(out.length>900)out=out.slice(0,900)+'…';
+  r.textContent='DEMO SUMMARY\\n\\n'+out+'\\n\\nKey words: '+t.split(/\\s+/).filter(w=>w.length>6).slice(0,8).join(', ');r.classList.remove('hidden');
+}
+function makeQuiz(){
+  const topic=document.getElementById('quizInput').value.trim();const r=document.getElementById('quizResult');if(!topic){r.textContent='Please enter a topic first.';r.classList.remove('hidden');return}
+  r.textContent='Practice Quiz: '+topic+'\\n\\n1. What is the main idea of '+topic+'?\\nA) A basic concept\\nB) An unrelated topic\\nC) None of these\\n\\n2. Which statement best describes '+topic+'?\\nA) It has no use\\nB) Explain its key purpose\\nC) It is always incorrect\\n\\n3. Give one real-world example of '+topic+'.\\n\\nNote: Demo questions—real AI-generated quizzes will be added in the next version.';r.classList.remove('hidden');
+}
+function explainTopic(){
+  const topic=document.getElementById('explainInput').value.trim();const r=document.getElementById('explainResult');if(!topic){r.textContent='Please type a topic first.';r.classList.remove('hidden');return}
+  r.textContent='Topic: '+topic+'\\n\\nBeginner explanation: '+topic+' is a concept that you can understand by identifying what it means, why it is useful, and how it works.\\n\\nTry learning it in three steps:\\n1. Understand its definition.\\n2. Look at a simple example.\\n3. Explain it in your own words.\\n\\nThis is a demo explanation. A real AI connection will provide topic-specific explanations.';r.classList.remove('hidden');
+}
+</script>
+</body>
+</html>
